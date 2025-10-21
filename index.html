@@ -3,92 +3,164 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>my-first-code Bulletin Board</title>
+    <title>my-first-code Neon Board</title>
     <style>
       :root {
-        color-scheme: light dark;
-        --bg: #f7f8fa;
-        --surface: #ffffff;
-        --accent: #2563eb;
-        --text: #111827;
-        --muted: #6b7280;
-        --border: #d1d5db;
-        font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+        color-scheme: only dark;
+        font-family: "Inter", "Poppins", "Segoe UI", system-ui, -apple-system,
+          sans-serif;
       }
       * {
         box-sizing: border-box;
       }
       body {
         margin: 0;
-        background: var(--bg);
-        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        background: radial-gradient(circle at 15% 15%, #ff6ec7, transparent 60%),
+          radial-gradient(circle at 85% 20%, #00f5d4, transparent 55%),
+          radial-gradient(circle at 20% 85%, #ffd500, transparent 55%),
+          radial-gradient(circle at 80% 80%, #1a8cff, transparent 60%),
+          #050916;
+        color: #e2e8f0;
+      }
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        width: 42vmax;
+        height: 42vmax;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.4;
+        z-index: 0;
+      }
+      body::before {
+        background: linear-gradient(135deg, #ff6ec7, #7f5af0);
+        top: -12vmax;
+        right: -14vmax;
+      }
+      body::after {
+        background: linear-gradient(135deg, #00f5d4, #60a5fa);
+        bottom: -14vmax;
+        left: -16vmax;
       }
       .page {
+        position: relative;
+        z-index: 1;
         max-width: 960px;
-        margin: 0 auto;
-        padding: clamp(1rem, 3vw, 2.5rem);
+        width: min(960px, 100%);
+        margin: clamp(1.5rem, 6vw, 4rem) auto;
+        padding: clamp(1.5rem, 4vw, 3rem);
+        background: rgba(9, 12, 26, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 28px;
+        backdrop-filter: blur(18px);
+        box-shadow: 0 35px 80px rgba(4, 9, 24, 0.6);
       }
       header {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-        margin-bottom: 1.5rem;
+        display: grid;
+        gap: 1rem;
+        margin-bottom: clamp(1.5rem, 4vw, 2.75rem);
       }
       h1 {
-        font-size: clamp(1.5rem, 4vw, 2.5rem);
         margin: 0;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        letter-spacing: 0.04em;
+        background: linear-gradient(120deg, #fdf2ff, #00f5d4 50%, #79b8ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 0 28px rgba(255, 255, 255, 0.2);
       }
       .meta {
-        color: var(--muted);
-        font-size: 0.95rem;
+        color: rgba(226, 232, 240, 0.78);
+        font-size: 1.05rem;
+        line-height: 1.6;
       }
       .actions {
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem;
       }
-      .actions a,
-      .actions button {
-        appearance: none;
-        border: 1px solid var(--accent);
-        background: var(--accent);
-        color: #ffffff;
-        padding: 0.6rem 1.1rem;
-        border-radius: 9999px;
+      .action-btn {
+        position: relative;
+        border: none;
+        border-radius: 999px;
+        padding: 0.7rem 1.4rem;
         font-size: 0.95rem;
         font-weight: 600;
-        cursor: pointer;
+        letter-spacing: 0.02em;
+        background: linear-gradient(120deg, #7f5af0, #00f5d4 70%, #2cb1ff);
+        color: #050916;
         text-decoration: none;
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        cursor: pointer;
+        box-shadow: 0 18px 35px rgba(0, 245, 212, 0.32);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
       }
-      .actions button.secondary {
-        background: transparent;
-        color: var(--accent);
+      .action-btn.secondary {
+        background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), rgba(148, 163, 184, 0.14));
+        color: #f1f5f9;
+        box-shadow: 0 14px 32px rgba(15, 118, 199, 0.3);
       }
-      .actions a:hover,
-      .actions button:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 16px -12px rgba(37, 99, 235, 0.8);
+      .action-btn:hover,
+      .action-btn:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 22px 45px rgba(127, 90, 240, 0.38);
       }
       main {
         display: grid;
-        gap: 1rem;
+        gap: clamp(1rem, 3vw, 1.8rem);
       }
       article {
-        background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 1.2rem;
-        display: grid;
-        gap: 0.75rem;
-        box-shadow: 0 12px 30px -25px rgba(15, 23, 42, 0.35);
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        padding: 1.4rem clamp(1rem, 3vw, 1.8rem);
+        color: inherit;
+        background: rgba(9, 13, 26, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 25px 55px rgba(15, 23, 42, 0.38);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      article::before {
+        content: "";
+        position: absolute;
+        inset: -3px;
+        background: linear-gradient(
+          120deg,
+          color-mix(in srgb, var(--card-accent) 70%, transparent),
+          color-mix(in srgb, var(--card-accent-soft) 75%, transparent)
+        );
+        opacity: 0.85;
+        z-index: 0;
+        filter: blur(12px);
+      }
+      article::after {
+        content: "";
+        position: absolute;
+        inset: 1px;
+        border-radius: inherit;
+        background: rgba(7, 10, 24, 0.92);
+        z-index: 0;
+        backdrop-filter: blur(18px);
+      }
+      article:hover {
+        transform: translateY(-4px) scale(1.01);
+        box-shadow: 0 40px 70px rgba(15, 23, 42, 0.55);
+      }
+      article > * {
+        position: relative;
+        z-index: 1;
       }
       article h2 {
         margin: 0;
-        font-size: 1.15rem;
+        font-size: clamp(1.1rem, 3vw, 1.6rem);
+        letter-spacing: 0.01em;
       }
       article h2 a {
-        color: inherit;
+        color: #f8fafc;
         text-decoration: none;
       }
       article h2 a:hover {
@@ -98,84 +170,98 @@
         display: flex;
         flex-wrap: wrap;
         gap: 0.5rem;
-        font-size: 0.85rem;
-        color: var(--muted);
+        font-size: 0.9rem;
+        color: rgba(226, 232, 240, 0.72);
       }
       .labels {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.5rem;
       }
       .label {
-        padding: 0.1rem 0.6rem;
-        border-radius: 9999px;
+        padding: 0.15rem 0.6rem;
+        border-radius: 999px;
         font-size: 0.75rem;
         font-weight: 600;
-        color: #111827;
-        background-color: rgba(37, 99, 235, 0.12);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        background: rgba(226, 232, 240, 0.12);
+        color: #f8fafc;
+        border: 1px solid rgba(255, 255, 255, 0.16);
       }
       .body {
         font-size: 0.95rem;
-        line-height: 1.5;
-        color: var(--text);
+        line-height: 1.7;
+        color: rgba(226, 232, 240, 0.85);
         white-space: pre-wrap;
         word-break: break-word;
       }
       .status {
-        font-size: 0.95rem;
-        color: var(--muted);
+        font-size: 1rem;
+        color: rgba(226, 232, 240, 0.7);
         text-align: center;
-        padding: 2rem 0;
+        padding: 2.5rem 0;
       }
       footer {
-        margin-top: 2rem;
-        font-size: 0.75rem;
-        color: var(--muted);
+        margin-top: clamp(2rem, 5vw, 3rem);
+        font-size: 0.8rem;
+        color: rgba(148, 163, 184, 0.7);
+        letter-spacing: 0.06em;
         text-align: center;
       }
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0f172a;
-          --surface: #111c3a;
-          --text: #f8fafc;
-          --muted: #94a3b8;
-          --border: #1e293b;
+      @media (max-width: 640px) {
+        .page {
+          margin: clamp(1rem, 4vw, 2rem);
+          padding: clamp(1.1rem, 4vw, 2rem);
         }
-        .label {
-          color: #e0f2fe;
-          background-color: rgba(96, 165, 250, 0.2);
+        .actions {
+          flex-direction: column;
+          align-items: stretch;
         }
-      }
-      iframe,
-      body {
-        background-color: var(--bg);
+        .action-btn {
+          width: 100%;
+          text-align: center;
+        }
       }
     </style>
   </head>
   <body>
     <div class="page">
       <header>
-        <h1>Community Bulletin</h1>
+        <h1>Neon Issue Board</h1>
         <p class="meta">
-          Latest posts fetched from GitHub Issues in <span id="repo-name"></span>. Add
-          a new post by opening an issue.
+          Posts stream directly from GitHub Issues in
+          <span id="repo-name"></span>. Keep it colorful—open an Issue to start a
+          new thread. This layout is iframe-friendly for Google Sites and polished
+          for mobile.
         </p>
         <div class="actions">
-          <button id="refresh" class="secondary" type="button">Refresh</button>
-          <a id="new-post" href="#" target="_blank" rel="noopener">Write A Post</a>
-          <a id="view-issues" class="secondary" href="#" target="_blank" rel="noopener">Open Issues Log</a>
+          <button id="refresh" class="action-btn secondary" type="button">
+            Refresh Feed
+          </button>
+          <a id="new-post" class="action-btn" href="#" target="_blank" rel="noopener"
+            >Write A Post</a
+          >
+          <a
+            id="view-issues"
+            class="action-btn secondary"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            >Open Issues Log</a
+          >
         </div>
       </header>
       <main id="feed" aria-live="polite" aria-busy="true">
-        <p class="status" id="status">Loading posts…</p>
+        <p class="status" id="status">Loading vibrant posts…</p>
       </main>
       <footer>
-        Built for embedding in Google Sites via &lt;iframe&gt;. Data refreshes on demand and respects GitHub API rate limits.
+        Neon theme. Powered by GitHub Issues. Remember to respect API rate
+        limits when embedding.
       </footer>
     </div>
     <script>
-      // Update this constant with the GitHub username that owns the repository.
-      const GITHUB_OWNER = "your-github-account";
+      const GITHUB_OWNER = "your-github-account"; // TODO: set your GitHub username
       const REPO = "my-first-code";
       const FEED = document.getElementById("feed");
       const STATUS = document.getElementById("status");
@@ -189,12 +275,12 @@
         const baseIssuesUrl = `https://github.com/${GITHUB_OWNER}/${REPO}/issues`;
         newPostLink.href = `${baseIssuesUrl}/new`;
         viewIssuesLink.href = baseIssuesUrl;
-        document.title = `${REPO} Bulletin Board`;
+        document.title = `${REPO} Neon Board`;
       }
 
       async function fetchIssues() {
         FEED.setAttribute("aria-busy", "true");
-        STATUS.textContent = "Loading posts…";
+        STATUS.textContent = "Loading vibrant posts…";
         STATUS.style.display = "block";
         const url = `https://api.github.com/repos/${GITHUB_OWNER}/${REPO}/issues?state=all&per_page=20&sort=created&direction=desc`;
         try {
@@ -221,7 +307,7 @@
         FEED.innerHTML = "";
         const posts = issues.filter((issue) => !issue.pull_request);
         if (!posts.length) {
-          STATUS.textContent = "No posts yet. Be the first to create an issue!";
+          STATUS.textContent = "No posts yet. Be the first to ignite the feed!";
           STATUS.style.display = "block";
           return;
         }
@@ -229,6 +315,9 @@
 
         posts.forEach((issue) => {
           const card = document.createElement("article");
+          const palette = cardPalette(issue.number ?? Math.random() * 360);
+          card.style.setProperty("--card-accent", palette.accent);
+          card.style.setProperty("--card-accent-soft", palette.softAccent);
 
           const heading = document.createElement("h2");
           const link = document.createElement("a");
@@ -261,6 +350,13 @@
             const badge = document.createElement("span");
             badge.className = "label";
             badge.textContent = label.name;
+            if (label.color) {
+              const color = normalizeHex(label.color);
+              badge.style.backgroundColor = color;
+              badge.style.color = pickTextColor(color);
+              badge.style.borderColor = color;
+              badge.style.boxShadow = `0 0 18px ${color}44`;
+            }
             labelsWrap.appendChild(badge);
           });
 
@@ -277,6 +373,33 @@
           }
           FEED.appendChild(card);
         });
+      }
+
+      function cardPalette(seed) {
+        const hue = Math.floor((Number(seed) * 47) % 360);
+        const accent = `hsl(${hue} 92% 65%)`;
+        const softAccent = `hsl(${(hue + 40) % 360} 90% 58%)`;
+        return { accent, softAccent };
+      }
+
+      function normalizeHex(hex) {
+        let value = String(hex).replace(/[^0-9a-fA-F]/g, "");
+        if (value.length === 3) {
+          value = value
+            .split("")
+            .map((ch) => ch + ch)
+            .join("");
+        }
+        return value ? `#${value.slice(0, 6)}` : "#94a3b8";
+      }
+
+      function pickTextColor(bgHex) {
+        const hex = bgHex.replace("#", "");
+        const r = parseInt(hex.substr(0, 2), 16);
+        const g = parseInt(hex.substr(2, 2), 16);
+        const b = parseInt(hex.substr(4, 2), 16);
+        const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return luminance > 0.6 ? "#0f172a" : "#f8fafc";
       }
 
       refreshButton.addEventListener("click", fetchIssues);
