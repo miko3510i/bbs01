@@ -146,16 +146,41 @@
         color: var(--muted);
         margin-bottom: 1rem;
       }
-      li.issue-card p {
+      li.issue-card .body-content {
         margin: 0;
         line-height: 1.7;
-        white-space: pre-wrap;
-        word-break: break-word;
         color: var(--text);
         background: rgba(255, 255, 255, 0.75);
         padding: 0.8rem 1rem;
         border-radius: 12px;
         box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+      }
+      li.issue-card .body-content p {
+        margin: 0 0 0.9rem;
+      }
+      li.issue-card .body-content p:last-child {
+        margin-bottom: 0;
+      }
+      li.issue-card .body-content img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0.75rem auto;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(14, 116, 144, 0.18);
+      }
+      li.issue-card .body-content iframe,
+      li.issue-card .body-content video {
+        max-width: 100%;
+        display: block;
+        margin: 0.75rem auto;
+        border-radius: 12px;
+      }
+      li.issue-card .body-content a {
+        color: var(--accent-dark);
+        word-break: break-word;
       }
       .status {
         text-align: center;
@@ -220,7 +245,7 @@
           const response = await fetch(
             `https://api.github.com/repos/${OWNER}/${REPO}/issues?state=all&per_page=20&sort=created&direction=desc`,
             {
-              headers: { Accept: "application/vnd.github+json" },
+              headers: { Accept: "application/vnd.github.v3.html+json" },
               cache: "no-store",
             },
           );
@@ -270,8 +295,14 @@
             });
           }
 
-          const body = document.createElement("p");
-          body.textContent = issue.body ?? "";
+          const body = document.createElement("div");
+          body.className = "body-content";
+          if (issue.body_html) {
+            body.innerHTML = issue.body_html;
+          } else {
+            body.textContent = issue.body ?? "";
+            body.style.whiteSpace = "pre-wrap";
+          }
 
           item.append(title, time, body);
           FEED.appendChild(item);
