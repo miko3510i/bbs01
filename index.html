@@ -3,71 +3,210 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>bbs01 Issues</title>
+    <title>bbs01 Hawaiian Breeze</title>
     <style>
+      :root {
+        font-family: "Noto Sans JP", "Inter", system-ui, sans-serif;
+        --bg-top: #dffff0;
+        --bg-bottom: #ffedd5;
+        --card-bg: rgba(255, 255, 255, 0.9);
+        --card-border: rgba(255, 255, 255, 0.4);
+        --accent: #0d9488;
+        --accent-dark: #0f766e;
+        --text: #134e4a;
+        --muted: #3f928b;
+      }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
-        font-family: "Inter", "Noto Sans JP", system-ui, -apple-system, sans-serif;
-        background: #f3f4f6;
-        color: #111827;
+        min-height: 100vh;
+        background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+        color: var(--text);
+        position: relative;
+        overflow-x: hidden;
+      }
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.6;
+      }
+      body::before {
+        top: -60px;
+        left: -80px;
+        width: 260px;
+        height: 260px;
+        background: url('data:image/svg+xml,%3Csvg width="200" height="200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none"%3E%3Cpath d="M95.8 10.8c11.7-3.2 24.7 6.3 35.4 18 10.7 11.7 19.3 25.7 16.3 37.5-3 11.7-18.7 21.2-33 31-14.3 9.7-27.2 19.7-37.4 18.5C66.9 114.5 59 99.8 53 84.6 46.9 69.5 42.6 53.9 47.6 43.2 52.7 32.5 67.9 26.7 79.1 22c11.1-4.7 19.1-11.1 31-11.2Z" fill="%23f97316" fill-opacity="0.55"/%3E%3C/svg%3E')
+          no-repeat center/contain;
+      }
+      body::after {
+        bottom: -90px;
+        right: -110px;
+        width: 320px;
+        height: 320px;
+        background: url('data:image/svg+xml,%3Csvg width="240" height="240" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none"%3E%3Cpath d="M183.2 36.4c14.1 5.2 25 21 31.5 37.7 6.6 16.7 8.8 34.4 1.1 46.1-7.7 11.7-26.3 17.3-44.4 23-18.2 5.7-35.9 11.6-47.9 6.2-12-5.3-18.3-21-25-36.9-6.8-15.9-13.9-31.9-8.1-43.9 5.7-12 23.6-20 38.5-27.6 14.8-7.5 26.7-14.6 39.3-9.4Z" fill="%230ea5e9" fill-opacity="0.4"/%3E%3C/svg%3E')
+          no-repeat center/contain;
       }
       .container {
-        max-width: 720px;
+        position: relative;
+        z-index: 1;
+        max-width: 860px;
         margin: 0 auto;
-        padding: 24px 16px;
+        padding: clamp(2rem, 5vw, 3.2rem) clamp(1.2rem, 5vw, 2.6rem);
+      }
+      header {
+        text-align: center;
+        margin-bottom: clamp(1.8rem, 4vw, 2.6rem);
       }
       h1 {
-        font-size: 1.8rem;
-        margin: 0 0 24px;
-        text-align: center;
+        margin: 0;
+        font-size: clamp(2rem, 6vw, 3rem);
+        letter-spacing: 0.05em;
+        color: #047857;
       }
-      ul {
+      p.tagline {
+        margin: 0.9rem auto 0;
+        max-width: 520px;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.6;
+      }
+      .lei {
+        margin: 2rem auto 2.8rem;
+        width: min(360px, 100%);
+        height: 24px;
+        background: repeating-linear-gradient(
+            90deg,
+            rgba(248, 113, 113, 0.35),
+            rgba(248, 113, 113, 0.35) 12px,
+            rgba(251, 191, 36, 0.35) 12px,
+            rgba(251, 191, 36, 0.35) 24px,
+            rgba(16, 185, 129, 0.35) 24px,
+            rgba(16, 185, 129, 0.35) 36px,
+            rgba(94, 234, 212, 0.35) 36px,
+            rgba(94, 234, 212, 0.35) 48px
+          ),
+          radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 70%);
+        border-radius: 999px;
+        filter: blur(1px);
+        box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.6);
+      }
+      ul#feed {
         list-style: none;
         margin: 0;
         padding: 0;
         display: grid;
-        gap: 16px;
+        gap: clamp(1.2rem, 3vw, 1.8rem);
       }
-      li {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 16px;
+      li.issue-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 18px;
+        padding: clamp(1.1rem, 4vw, 1.6rem);
+        box-shadow: 0 18px 35px rgba(14, 116, 144, 0.12);
+        position: relative;
+        overflow: hidden;
       }
-      li h2 {
-        margin: 0 0 12px;
-        font-size: 1.2rem;
+      li.issue-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.12),
+          rgba(129, 199, 212, 0.15),
+          rgba(253, 230, 138, 0.12)
+        );
+        opacity: 0.9;
+        z-index: 0;
       }
-      li h2 a {
+      li.issue-card > * {
+        position: relative;
+        z-index: 1;
+      }
+      li.issue-card h2 {
+        margin: 0 0 0.75rem;
+        font-size: clamp(1.1rem, 4vw, 1.5rem);
+        color: var(--accent-dark);
+      }
+      li.issue-card h2 a {
         color: inherit;
         text-decoration: none;
       }
-      li h2 a:hover {
+      li.issue-card h2 a:hover {
         text-decoration: underline;
       }
-      li time {
+      li.issue-card time {
         display: block;
-        font-size: 0.85rem;
-        color: #6b7280;
-        margin-bottom: 12px;
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-bottom: 1rem;
       }
-      li p {
+      li.issue-card p {
         margin: 0;
+        line-height: 1.7;
         white-space: pre-wrap;
         word-break: break-word;
-        line-height: 1.6;
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.75);
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
       }
       .status {
         text-align: center;
-        color: #6b7280;
-        margin-top: 48px;
+        margin-top: 2.6rem;
+        color: var(--muted);
         font-size: 0.95rem;
+      }
+      .palms,
+      .hibiscus {
+        position: fixed;
+        pointer-events: none;
+        opacity: 0.78;
+        z-index: 0;
+      }
+      .palms {
+        bottom: -20px;
+        left: 2vw;
+        width: clamp(160px, 20vw, 220px);
+      }
+      .hibiscus {
+        top: clamp(12px, 4vw, 40px);
+        right: clamp(6px, 4vw, 36px);
+        width: clamp(120px, 18vw, 200px);
+      }
+      @media (max-width: 640px) {
+        .palms {
+          display: none;
+        }
       }
     </style>
   </head>
   <body>
+    <img
+      class="palms"
+      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 220' fill='none'%3E%3Cpath d='M92.3 217.4c-.5-20.8-7.4-66.8-8.2-90-1-27 5.5-52.5 11.4-77.6C104.1 27.4 112.2 6.7 100 2 87.8-2.7 78 19.6 67.8 38.8c-8.8 16.5-17.3 31.6-27.9 37.6C29.4 82.4 19.6 78.1 9 73.4c-10.6-4.7-21.4-9.5-25 1.6-3.6 11.1 4.4 33 12.4 50.9 8 17.9 16 31.8 27.6 38.6 11.6 6.8 26.9 6.5 39.5 12.1 12.3 5.4 22 17 28.8 40.8Z' fill='%230f766e' fill-opacity='.55'/%3E%3Cpath d='M126.4 84.6c12.9-2 27.2 4.8 39.5 13.8 12.2 9 22.4 20.2 20.2 28.5-2.2 8.3-16.6 13.8-30.5 18.5-13.8 4.6-27.1 8.6-36.9 4.6-9.8-4-15.9-14.6-21.8-24.6-5.9-10-11.5-19.4-6.7-26.8 4.8-7.4 19.5-12 32.5-14Z' fill='%23256f63' fill-opacity='.45'/%3E%3C/svg%3E"
+      alt="Palm trees"
+    />
+    <img
+      class="hibiscus"
+      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none'%3E%3Cpath d='M94.7 22.4c8.8-12.1 31.9-2.5 47.6 7.4 15.7 9.9 23.8 18.1 23.4 28.5-.4 10.4-9.6 22.9-18 32.6-8.4 9.7-15.9 16.7-22.2 25.4-6.3 8.6-11.4 19-20.4 20.2-9 1.2-21.9-7.2-31.2-16.2-9.4-9-15.2-18.5-20.1-28.2-5-9.7-9.1-19.5-7.2-28.8 1.9-9.3 9.7-18 17.9-26.5C72.8 39.6 85.9 34.5 94.7 22.4Z' fill='%23f97316' fill-opacity='.4'/%3E%3Cpath d='M75.8 47.6c3.6-13.9 21.3-16.1 36.9-15.6 15.6.5 29 3.7 33.4 12 4.4 8.3-.3 21.6-6.6 33-6.3 11.3-13.1 20.6-21.1 26.6-8 6-17.4 8.7-27.8 9.2-10.4.5-21.8-1.3-27.6-9.4-5.8-8.1-5.9-22.5-3-36.3 2.8-13.9 7.1-26 15.8-19.5Z' fill='%23fbbf24' fill-opacity='.4'/%3E%3C/svg%3E"
+      alt="Hibiscus flowers"
+    />
     <div class="container">
-      <h1>bbs01 Issues</h1>
+      <header>
+        <h1>Hawaiian Breeze Board</h1>
+        <p class="tagline">
+          穏やかな海風のようにゆったりした掲示板。`miko3510i/bbs01`
+          のIssueを並べています。
+        </p>
+        <div class="lei" aria-hidden="true"></div>
+      </header>
       <ul id="feed" aria-live="polite" aria-busy="true"></ul>
       <p class="status" id="status">読み込み中…</p>
     </div>
@@ -115,13 +254,14 @@
         STATUS.style.display = "none";
         issues.forEach((issue) => {
           const item = document.createElement("li");
+          item.className = "issue-card";
 
           const title = document.createElement("h2");
           const link = document.createElement("a");
           link.href = issue.html_url;
           link.target = "_blank";
           link.rel = "noopener";
-          link.textContent = issue.title || "Untitled";
+          link.textContent = issue.title || "タイトルなし";
           title.appendChild(link);
 
           const time = document.createElement("time");
