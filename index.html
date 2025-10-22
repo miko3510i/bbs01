@@ -84,12 +84,16 @@
         flex-wrap: wrap;
         gap: 0.75rem;
       }
+      .action-btn,
+      .owner-form button,
+      .owner-form input {
+        border-radius: 999px;
+        border: none;
+        font-size: 0.95rem;
+      }
       .action-btn {
         position: relative;
-        border: none;
-        border-radius: 999px;
         padding: 0.7rem 1.4rem;
-        font-size: 0.95rem;
         font-weight: 600;
         letter-spacing: 0.02em;
         background: linear-gradient(120deg, #7f5af0, #00f5d4 70%, #2cb1ff);
@@ -100,7 +104,11 @@
         transition: transform 0.18s ease, box-shadow 0.18s ease;
       }
       .action-btn.secondary {
-        background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), rgba(148, 163, 184, 0.14));
+        background: linear-gradient(
+          120deg,
+          rgba(255, 255, 255, 0.12),
+          rgba(148, 163, 184, 0.14)
+        );
         color: #f1f5f9;
         box-shadow: 0 14px 32px rgba(15, 118, 199, 0.3);
       }
@@ -108,6 +116,46 @@
       .action-btn:focus-visible {
         transform: translateY(-2px);
         box-shadow: 0 22px 45px rgba(127, 90, 240, 0.38);
+      }
+      .owner-form {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        align-items: center;
+        background: rgba(15, 23, 42, 0.6);
+        padding: 0.8rem 1rem;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.12);
+      }
+      .owner-form label {
+        font-size: 0.85rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: rgba(226, 232, 240, 0.75);
+      }
+      .owner-form input {
+        flex: 1 1 160px;
+        min-width: 0;
+        padding: 0.55rem 1rem;
+        background: rgba(15, 23, 42, 0.8);
+        color: #f1f5f9;
+        border: 1px solid rgba(148, 163, 184, 0.25);
+        backdrop-filter: blur(12px);
+      }
+      .owner-form button {
+        padding: 0.55rem 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        background: linear-gradient(135deg, #fdbb2d, #22d3ee);
+        color: #050916;
+        cursor: pointer;
+        box-shadow: 0 16px 30px rgba(14, 165, 233, 0.4);
+        transition: transform 0.18s ease;
+      }
+      .owner-form button:hover,
+      .owner-form button:focus-visible {
+        transform: translateY(-1px);
       }
       main {
         display: grid;
@@ -173,6 +221,23 @@
         font-size: 0.9rem;
         color: rgba(226, 232, 240, 0.72);
       }
+      .issue-info .state {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.2rem 0.65rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .issue-info .comments {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
       .labels {
         display: flex;
         flex-wrap: wrap;
@@ -222,6 +287,14 @@
           width: 100%;
           text-align: center;
         }
+        .owner-form {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .owner-form input,
+        .owner-form button {
+          width: 100%;
+        }
       }
     </style>
   </head>
@@ -235,6 +308,18 @@
           new thread. This layout is iframe-friendly for Google Sites and polished
           for mobile.
         </p>
+        <form class="owner-form" id="owner-form">
+          <label for="owner-input">GitHub Owner</label>
+          <input
+            id="owner-input"
+            name="owner"
+            type="text"
+            autocomplete="off"
+            placeholder="e.g. octocat"
+            required
+          />
+          <button type="submit">Load Issues</button>
+        </form>
         <div class="actions">
           <button id="refresh" class="action-btn secondary" type="button">
             Refresh Feed
@@ -261,7 +346,8 @@
       </footer>
     </div>
     <script>
-      const GITHUB_OWNER = "your-github-account"; // TODO: set your GitHub username
+      const DEFAULT_OWNER = "your-github-account";
+      const STORAGE_KEY = "bbs01-issues-owner";
       const REPO = "my-first-code";
       const FEED = document.getElementById("feed");
       const STATUS = document.getElementById("status");
@@ -269,20 +355,45 @@
       const refreshButton = document.getElementById("refresh");
       const newPostLink = document.getElementById("new-post");
       const viewIssuesLink = document.getElementById("view-issues");
+      const ownerForm = document.getElementById("owner-form");
+      const ownerInput = document.getElementById("owner-input");
 
-      function updateRepoMetadata() {
-        repoNameEl.textContent = `${GITHUB_OWNER}/${REPO}`;
-        const baseIssuesUrl = `https://github.com/${GITHUB_OWNER}/${REPO}/issues`;
+      let currentOwner = resolveOwner();
+
+      function resolveOwner() {
+        const params = new URLSearchParams(window.location.search);
+        const paramOwner = params.get("owner");
+        if (paramOwner) {
+          localStorage.setItem(STORAGE_KEY, paramOwner.trim());
+          return paramOwner.trim();
+        }
+        const savedOwner = localStorage.getItem(STORAGE_KEY);
+        if (savedOwner) {
+          return savedOwner.trim();
+        }
+        return DEFAULT_OWNER;
+      }
+
+      function updateRepoMetadata(owner) {
+        repoNameEl.textContent = `${owner}/${REPO}`;
+        const baseIssuesUrl = `https://github.com/${owner}/${REPO}/issues`;
         newPostLink.href = `${baseIssuesUrl}/new`;
         viewIssuesLink.href = baseIssuesUrl;
         document.title = `${REPO} Neon Board`;
+        ownerInput.value = owner;
       }
 
-      async function fetchIssues() {
+      async function fetchIssues(owner) {
+        if (!owner || owner === "your-github-account") {
+          STATUS.textContent = "Set your GitHub owner above to load issues.";
+          STATUS.style.display = "block";
+          FEED.innerHTML = "";
+          return;
+        }
         FEED.setAttribute("aria-busy", "true");
         STATUS.textContent = "Loading vibrant posts…";
         STATUS.style.display = "block";
-        const url = `https://api.github.com/repos/${GITHUB_OWNER}/${REPO}/issues?state=all&per_page=20&sort=created&direction=desc`;
+        const url = `https://api.github.com/repos/${owner}/${REPO}/issues?state=all&per_page=20&sort=created&direction=desc`;
         try {
           const response = await fetch(url, {
             headers: {
@@ -297,7 +408,9 @@
           renderIssues(Array.isArray(issues) ? issues : []);
         } catch (error) {
           console.error(error);
-          STATUS.textContent = "Couldn't load posts. Try again shortly.";
+          STATUS.textContent =
+            "Couldn't load posts. Check owner spelling or GitHub status.";
+          FEED.innerHTML = "";
         } finally {
           FEED.setAttribute("aria-busy", "false");
         }
@@ -329,6 +442,16 @@
 
           const info = document.createElement("div");
           info.className = "issue-info";
+          const stateBadge = document.createElement("span");
+          stateBadge.className = "state";
+          stateBadge.textContent = issue.state === "closed" ? "Closed" : "Open";
+          stateBadge.style.background = issue.state === "closed"
+            ? "rgba(239, 68, 68, 0.35)"
+            : "rgba(34, 197, 94, 0.35)";
+          stateBadge.style.borderColor = issue.state === "closed"
+            ? "rgba(248, 113, 113, 0.6)"
+            : "rgba(134, 239, 172, 0.6)";
+
           const author = document.createElement("span");
           author.textContent = `@${issue.user?.login ?? "unknown"}`;
           const timestamp = document.createElement("span");
@@ -339,10 +462,16 @@
                 timeStyle: "short",
               })
             : "";
-          info.append(author);
+
+          const commentCount = document.createElement("span");
+          commentCount.className = "comments";
+          commentCount.textContent = `${issue.comments ?? 0} comments`;
+
+          info.append(stateBadge, author);
           if (timestamp.textContent) {
             info.append(document.createTextNode(" · "), timestamp);
           }
+          info.append(document.createTextNode(" · "), commentCount);
 
           const labelsWrap = document.createElement("div");
           labelsWrap.className = "labels";
@@ -402,9 +531,22 @@
         return luminance > 0.6 ? "#0f172a" : "#f8fafc";
       }
 
-      refreshButton.addEventListener("click", fetchIssues);
-      updateRepoMetadata();
-      fetchIssues();
+      ownerForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const owner = ownerInput.value.trim();
+        if (!owner) {
+          return;
+        }
+        currentOwner = owner;
+        localStorage.setItem(STORAGE_KEY, owner);
+        updateRepoMetadata(owner);
+        fetchIssues(owner);
+      });
+
+      refreshButton.addEventListener("click", () => fetchIssues(currentOwner));
+
+      updateRepoMetadata(currentOwner);
+      fetchIssues(currentOwner);
     </script>
   </body>
 </html>
