@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>my-first-code Neon Board</title>
+    <title>bbs01 Neon Board</title>
     <style>
       :root {
         color-scheme: only dark;
@@ -346,9 +346,9 @@
       </footer>
     </div>
     <script>
-      const DEFAULT_OWNER = "your-github-account";
+      const DEFAULT_OWNER = "miko3510i";
       const STORAGE_KEY = "bbs01-issues-owner";
-      const REPO = "my-first-code";
+      const REPO = "bbs01";
       const FEED = document.getElementById("feed");
       const STATUS = document.getElementById("status");
       const repoNameEl = document.getElementById("repo-name");
@@ -384,7 +384,7 @@
       }
 
       async function fetchIssues(owner) {
-        if (!owner || owner === "your-github-account") {
+        if (!owner) {
           STATUS.textContent = "Set your GitHub owner above to load issues.";
           STATUS.style.display = "block";
           FEED.innerHTML = "";
